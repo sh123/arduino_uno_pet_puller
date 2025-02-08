@@ -4,7 +4,7 @@
 (Type: G-code from Geometry)
 (Units: MM)
 
-(Created on Saturday, 08 February 2025 at 18:57)
+(Created on Saturday, 08 February 2025 at 19:48)
 
 (This preprocessor is the default preprocessor used by FlatCAM.)
 (It is made to work with MACH3 compatible motion controllers.)
@@ -85,7 +85,7 @@
 (Tool: 10 -> Z_Move: 2)
 (Tool: 11 -> Z_Move: 2)
 
-(Z Toolchange: 15.0 mm)
+(Z Toolchange: 15 mm)
 (X,Y Toolchange: 0.0000, 0.0000 mm)
 (Z Start: None mm)
 (Z End: 0.5 mm)

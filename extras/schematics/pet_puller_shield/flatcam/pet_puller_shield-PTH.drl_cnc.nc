@@ -4,7 +4,7 @@
 (Type: G-code from Geometry)
 (Units: MM)
 
-(Created on Sunday, 09 February 2025 at 13:58)
+(Created on Sunday, 09 February 2025 at 15:22)
 
 (This preprocessor is the default preprocessor used by FlatCAM.)
 (It is made to work with MACH3 compatible motion controllers.)
@@ -91,7 +91,7 @@
 (Tool: 11 -> Z_Move: 2)
 (Tool: 12 -> Z_Move: 2)
 
-(Z Toolchange: 35.0 mm)
+(Z Toolchange: 15 mm)
 (X,Y Toolchange: 0.0000, 0.0000 mm)
 (Z Start: None mm)
 (Z End: 0.5 mm)
@@ -110,13 +110,13 @@ G94
 G01 F300.00
 
 M5
-G00 Z35.0000
+G00 Z15.0000
 T1
 G00 X0.0000 Y0.0000                
 M6
 (MSG, Change to Tool Dia = 0.7010 ||| Total drills for tool T1 = 15)
 M0
-G00 Z35.0000
+G00 Z15.0000
 
 G01 F300.00
 M03 S20000
@@ -183,13 +183,13 @@ G00 Z2.0000
 G01 F300.00
 
 M5
-G00 Z35.0000
+G00 Z15.0000
 T2
 G00 X0.0000 Y0.0000                
 M6
 (MSG, Change to Tool Dia = 0.7620 ||| Total drills for tool T2 = 10)
 M0
-G00 Z35.0000
+G00 Z15.0000
 
 G01 F300.00
 M03 S20000
@@ -236,13 +236,13 @@ G00 Z2.0000
 G01 F300.00
 
 M5
-G00 Z35.0000
+G00 Z15.0000
 T6
 G00 X0.0000 Y0.0000                
 M6
 (MSG, Change to Tool Dia = 0.8001 ||| Total drills for tool T6 = 2)
 M0
-G00 Z35.0000
+G00 Z15.0000
 
 G01 F300.00
 M03 S20000
@@ -257,13 +257,13 @@ G00 Z2.0000
 G01 F300.00
 
 M5
-G00 Z35.0000
+G00 Z15.0000
 T7
 G00 X0.0000 Y0.0000                
 M6
 (MSG, Change to Tool Dia = 0.8992 ||| Total drills for tool T7 = 2)
 M0
-G00 Z35.0000
+G00 Z15.0000
 
 G01 F300.00
 M03 S20000
@@ -278,13 +278,13 @@ G00 Z2.0000
 G01 F300.00
 
 M5
-G00 Z35.0000
+G00 Z15.0000
 T8
 G00 X0.0000 Y0.0000                
 M6
 (MSG, Change to Tool Dia = 0.9500 ||| Total drills for tool T8 = 4)
 M0
-G00 Z35.0000
+G00 Z15.0000
 
 G01 F300.00
 M03 S20000
@@ -307,13 +307,13 @@ G00 Z2.0000
 G01 F300.00
 
 M5
-G00 Z35.0000
+G00 Z15.0000
 T9
 G00 X0.0000 Y0.0000                
 M6
 (MSG, Change to Tool Dia = 1.0008 ||| Total drills for tool T9 = 34)
 M0
-G00 Z35.0000
+G00 Z15.0000
 
 G01 F300.00
 M03 S20000
@@ -456,13 +456,13 @@ G00 Z2.0000
 G01 F300.00
 
 M5
-G00 Z35.0000
+G00 Z15.0000
 T10
 G00 X0.0000 Y0.0000                
 M6
 (MSG, Change to Tool Dia = 1.0998 ||| Total drills for tool T10 = 6)
 M0
-G00 Z35.0000
+G00 Z15.0000
 
 G01 F300.00
 M03 S20000
@@ -493,13 +493,13 @@ G00 Z2.0000
 G01 F300.00
 
 M5
-G00 Z35.0000
+G00 Z15.0000
 T11
 G00 X0.0000 Y0.0000                
 M6
 (MSG, Change to Tool Dia = 1.6002 ||| Total drills for tool T11 = 2)
 M0
-G00 Z35.0000
+G00 Z15.0000
 
 G01 F300.00
 M03 S20000
@@ -514,13 +514,13 @@ G00 Z2.0000
 G01 F300.00
 
 M5
-G00 Z35.0000
+G00 Z15.0000
 T12
 G00 X0.0000 Y0.0000                
 M6
 (MSG, Change to Tool Dia = 1.6993 ||| Total drills for tool T12 = 2)
 M0
-G00 Z35.0000
+G00 Z15.0000
 
 G01 F300.00
 M03 S20000

@@ -4,14 +4,14 @@
 (Type: G-code from Geometry)
 (Units: MM)
 
-(Created on Saturday, 08 February 2025 at 19:47)
+(Created on Sunday, 09 February 2025 at 13:19)
 
 (This preprocessor is the default preprocessor used by FlatCAM.)
 (It is made to work with MACH3 compatible motion controllers.)
 
 
 (TOOLS DIAMETER: )
-(Tool: 1 -> Dia: 1.7)
+(Tool: 1 -> Dia: 1.3)
 
 (FEEDRATE Z: )
 (Tool: 1 -> Feedrate: 300)
@@ -20,7 +20,7 @@
 (Tool: 1 -> Feedrate Rapids: 1500)
 
 (Z_CUT: )
-(Tool: 1 -> Z_Cut: -1.7)
+(Tool: 1 -> Z_Cut: -3.7)
 
 (Tools Offset: )
 (Tool: 1 -> Offset Z: 0.0)
@@ -36,10 +36,10 @@
 (Steps per circle: 64)
 (Preprocessor Excellon: default)
 
-(X range:    1.1500 ...   75.8500  mm)
-(Y range:   -2.8822 ...   56.8500  mm)
+(X range:    1.3500 ...   73.6500  mm)
+(Y range:   -2.7020 ...   56.6500  mm)
 
-(Spindle Speed: 0 RPM)
+(Spindle Speed: 20000 RPM)
 G21
 G90
 G94
@@ -51,26 +51,26 @@ G00 Z15.0000
 T1
 G00 X0.0000 Y0.0000                
 M6
-(MSG, Change to Tool Dia = 1.7000 ||| Total drills for tool T1 = 4)
+(MSG, Change to Tool Dia = 1.3000 ||| Total drills for tool T1 = 4)
 M0
 G00 Z15.0000
 
 G01 F300.00
-M03
+M03 S20000
 G00 X2.0000 Y56.0000
-G01 Z-1.7000
+G01 Z-3.7000
 G01 Z0
 G00 Z2.0000
-G00 X75.0000 Y-2.0322
-G01 Z-1.7000
+G00 X73.0000 Y-2.0520
+G01 Z-3.7000
 G01 Z0
 G00 Z2.0000
-G00 X75.0000 Y56.0000
-G01 Z-1.7000
+G00 X73.0000 Y56.0000
+G01 Z-3.7000
 G01 Z0
 G00 Z2.0000
-G00 X2.0000 Y-2.0322
-G01 Z-1.7000
+G00 X2.0000 Y-2.0520
+G01 Z-3.7000
 G01 Z0
 G00 Z2.0000
 M05

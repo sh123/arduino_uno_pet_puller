@@ -3,6 +3,9 @@
 #include <Stepper.h>
 
 #define CFG_STEPPER_STEPS   200
+#define CFG_STEPPER_SPEED   64
+#define CFG_STEPPER_STEP    20
+
 #define CFG_STEPPER_PIN_M0  4
 #define CFG_STEPPER_PIN_M1  5
 #define CFG_STEPPER_PIN_M2  6
@@ -32,6 +35,7 @@ bool debugPrint(void *arg) {
     uint8_t t = analogRead(CFG_THERMISTOR_PIN);
     Serial.print(t, HEX); Serial.println();
     digitalWrite(CFG_LED_PIN, !digitalRead(CFG_LED_PIN));
+    stepper_.step(CFG_STEPPER_STEP);
     return true;
 }
 
@@ -40,6 +44,7 @@ void setup() {
     pinMode(CFG_HOTEND_PIN, OUTPUT);
     pinMode(CFG_RUNOUT_PIN, INPUT);
     attachInterrupt(digitalPinToInterrupt(CFG_RUNOUT_PIN), runoutTriggered, CHANGE);
+    stepper_.setSpeed(CFG_STEPPER_SPEED);
 
     Serial.begin(115200);
     while (!Serial);

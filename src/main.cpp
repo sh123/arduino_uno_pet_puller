@@ -17,8 +17,15 @@ Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0,
 
 Timer<1, millis> debugTimer_;
 
+volatile bool hasFilament_ = false;
+
 void runoutTriggered() {
-    Serial.println(F("Runout"));
+    bool hasFilament = digitalRead(CFG_RUNOUT_PIN);
+    if (hasFilament_ != hasFilament) {
+        Serial.println(hasFilament ? F("ON") : F("OFF"));
+        digitalWrite(CFG_HOTEND_PIN, hasFilament ? HIGH : LOW);
+        hasFilament_ = hasFilament;
+    }
 }
 
 bool debugPrint(void *arg) {

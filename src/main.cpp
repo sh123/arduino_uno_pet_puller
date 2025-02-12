@@ -5,8 +5,6 @@
 #define CFG_STEPPER_RPM     5
 #define CFG_STEPPER_STEPS   200
 #define CFG_STEPPER_STEP    1
-
-#define CFG_HOTEND_WAIT_MS  2L*1000L
 #define CFG_STEPPER_WAIT_MS 60L*1000L/CFG_STEPPER_STEPS/CFG_STEPPER_RPM     
 
 #define CFG_STEPPER_PIN_M0  4
@@ -21,20 +19,32 @@
 Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0, 
     CFG_STEPPER_PIN_M1, CFG_STEPPER_PIN_M2, CFG_STEPPER_PIN_M3);
 
-Timer<3, millis> timer_;
+Timer<2, millis> timer_;
 
 volatile bool hasFilament_ = false;
+
+void stepperRelease() {
+    digitalWrite(CFG_STEPPER_PIN_M0, LOW);  
+    digitalWrite(CFG_STEPPER_PIN_M1, LOW);  
+    digitalWrite(CFG_STEPPER_PIN_M2, LOW);  
+    digitalWrite(CFG_STEPPER_PIN_M3, LOW);  
+}
 
 void runoutTriggered() {
     bool hasFilament = digitalRead(CFG_RUNOUT_PIN);
     if (hasFilament_ != hasFilament) {
         Serial.println(hasFilament ? F("ON") : F("OFF"));
         digitalWrite(CFG_HOTEND_PIN, hasFilament ? HIGH : LOW);
+        if (!hasFilament) {
+            stepperRelease();
+        }
         hasFilament_ = hasFilament;
     }
 }
 
 bool debugPrint(void *arg) {
+    uint8_t t = analogRead(CFG_THERMISTOR_PIN);
+    Serial.print(t, HEX); Serial.println();
     digitalWrite(CFG_LED_PIN, !digitalRead(CFG_LED_PIN));
     return true;
 }
@@ -43,12 +53,6 @@ bool stepperStep(void *arg) {
     if (hasFilament_) {
         stepper_.step(CFG_STEPPER_STEP);
     }
-    return true;
-}
-
-bool hotendTempControl(void *arg) {
-    uint8_t t = analogRead(CFG_THERMISTOR_PIN);
-    Serial.print(t, HEX); Serial.println();
     return true;
 }
 
@@ -64,7 +68,6 @@ void setup() {
 
     timer_.every(1000, debugPrint);
     timer_.every(CFG_STEPPER_WAIT_MS, stepperStep);
-    timer_.every(CFG_HOTEND_WAIT_MS, hotendTempControl);
     Serial.println(F("Started"));
 }
 

@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <arduino-timer.h>
 #include <Stepper.h>
+#include <PID_v1.h>
 
 #define CFG_STEPPER_RPM         5
 #define CFG_STEPPER_STEPS       200
@@ -19,12 +20,21 @@
 #define CFG_THERMISTOR_WAIT_MS  2L*1000L
 #define CFG_THERMISTOR_R        10000
 
-Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0, 
-    CFG_STEPPER_PIN_M1, CFG_STEPPER_PIN_M2, CFG_STEPPER_PIN_M3);
+#define CFG_PID_KP              23.0
+#define CFG_PID_KI              0.043
+#define CFG_PID_KD              160.0
+#define CFG_PID_MAX_TEMP        200
+
+volatile bool hasFilament_ = false;
+double pidInput_, pidOutput_, pidSetpoint_;
 
 Timer<3, millis> timer_;
 
-volatile bool hasFilament_ = false;
+Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0, 
+    CFG_STEPPER_PIN_M1, CFG_STEPPER_PIN_M2, CFG_STEPPER_PIN_M3);
+
+PID pid_(&pidInput_, &pidOutput_, &pidSetpoint_, CFG_PID_KP, 
+    CFG_PID_KI, CFG_PID_KD, DIRECT);
 
 void stepperRelease() {
     digitalWrite(CFG_STEPPER_PIN_M0, LOW); 
@@ -62,8 +72,9 @@ double thermistorRead() {
 }
 
 bool thermistorProcess(void *arg) {
-    double t = thermistorRead();
-    Serial.print(t); Serial.println();
+    pidInput_ = thermistorRead();
+    pid_.Compute();
+    Serial.print(pidInput_); Serial.print(' '); Serial.println(pidOutput_);
     return true;
 }
 
@@ -78,6 +89,12 @@ void setup() {
     pinMode(CFG_RUNOUT_PIN, INPUT);
 
     stepper_.setSpeed(CFG_STEPPER_RPM);
+
+    analogWrite(CFG_HOTEND_PIN, 0);
+
+    pid_.SetTunings(CFG_PID_KP, CFG_PID_KI, CFG_PID_KD);
+    pid_.SetOutputLimits(0, CFG_PID_MAX_TEMP);
+    pid_.SetMode(AUTOMATIC);
 
     timer_.every(1000, debugPrint);
     timer_.every(CFG_STEPPER_WAIT_MS, stepperStep);

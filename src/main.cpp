@@ -6,7 +6,7 @@
 #define CFG_STEPPER_RPM         40
 #define CFG_STEPPER_STEPS       200
 #define CFG_STEPPER_STEP        1
-#define CFG_STEPPER_WAIT_MS     60L*1000L/CFG_STEPPER_STEPS/CFG_STEPPER_RPM     
+#define CFG_STEPPER_RUN_MS      60L*1000L/CFG_STEPPER_STEPS/CFG_STEPPER_RPM     
 #define CFG_STEPPER_PIN_M0      4
 #define CFG_STEPPER_PIN_M1      5
 #define CFG_STEPPER_PIN_M2      6
@@ -17,7 +17,7 @@
 #define CFG_RUNOUT_PIN          2
 
 #define CFG_THERMISTOR_PIN      A2
-#define CFG_THERMISTOR_WAIT_MS  2L*1000L
+#define CFG_THERMISTOR_RUN_MS   2L*1000L
 #define CFG_THERMISTOR_R        10000
 
 #define CFG_PID_KP              23.0
@@ -104,8 +104,8 @@ void setup() {
     pid_.SetOutputLimits(0, CFG_PID_MAX_OUTPUT);
     pid_.SetMode(AUTOMATIC);
 
-    timer_.every(CFG_STEPPER_WAIT_MS, stepperStep);
-    timer_.every(CFG_THERMISTOR_WAIT_MS, thermistorProcess);
+    timer_.every(CFG_STEPPER_RUN_MS, stepperStep);
+    timer_.every(CFG_THERMISTOR_RUN_MS, thermistorProcess);
 
     attachInterrupt(digitalPinToInterrupt(CFG_RUNOUT_PIN), runoutTriggered, CHANGE);
 

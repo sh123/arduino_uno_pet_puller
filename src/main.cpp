@@ -26,11 +26,12 @@
 #define CFG_PID_TEMP            230.0
 #define CFG_PID_MAX_TEMP        240.0
 #define CFG_PID_MAX_OUTPUT      200.0
+#define CFG_PID_READY_TEMP      150.0
 
 volatile bool hasFilament_ = false;
 double pidInput_, pidOutput_, pidSetpoint_=CFG_PID_TEMP;
 
-Timer<3, millis> timer_;
+Timer<2, millis> timer_;
 
 Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0, 
     CFG_STEPPER_PIN_M1, CFG_STEPPER_PIN_M2, CFG_STEPPER_PIN_M3);
@@ -82,11 +83,11 @@ bool thermistorProcess(void *arg) {
     }
     Serial.print(pidInput_); Serial.print(' '); Serial.println(pidOutput_);
     analogWrite(CFG_HOTEND_PIN, pidOutput_);
-    return true;
-}
-
-bool debugPrint(void *arg) {
-    digitalWrite(CFG_LED_PIN, !digitalRead(CFG_LED_PIN));
+    if (pidInput_ > CFG_PID_READY_TEMP) {
+        digitalWrite(CFG_LED_PIN, LOW);
+    } else {
+        digitalWrite(CFG_LED_PIN, !digitalRead(CFG_LED_PIN));
+    }
     return true;
 }
 
@@ -103,7 +104,6 @@ void setup() {
     pid_.SetOutputLimits(0, CFG_PID_MAX_OUTPUT);
     pid_.SetMode(AUTOMATIC);
 
-    timer_.every(1000, debugPrint);
     timer_.every(CFG_STEPPER_WAIT_MS, stepperStep);
     timer_.every(CFG_THERMISTOR_WAIT_MS, thermistorProcess);
 

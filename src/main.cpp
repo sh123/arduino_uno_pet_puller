@@ -3,7 +3,7 @@
 #include <Stepper.h>
 #include <PID_v1.h>
 
-#define CFG_STEPPER_RPM         5
+#define CFG_STEPPER_RPM         30
 #define CFG_STEPPER_STEPS       200
 #define CFG_STEPPER_STEP        1
 #define CFG_STEPPER_WAIT_MS     60L*1000L/CFG_STEPPER_STEPS/CFG_STEPPER_RPM     
@@ -23,7 +23,7 @@
 #define CFG_PID_KP              23.0
 #define CFG_PID_KI              0.043
 #define CFG_PID_KD              160.0
-#define CFG_PID_TEMP            230.0
+#define CFG_PID_TEMP            220.0
 #define CFG_PID_MAX_TEMP        240.0
 #define CFG_PID_MAX_OUTPUT      200.0
 #define CFG_PID_READY_TEMP      150.0

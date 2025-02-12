@@ -1,12 +1,12 @@
 %TF.GenerationSoftware,KiCad,Pcbnew,6.0.11+dfsg-1*%
-%TF.CreationDate,2025-02-11T21:53:13+02:00*%
+%TF.CreationDate,2025-02-12T16:55:50+02:00*%
 %TF.ProjectId,pet_puller_shield,7065745f-7075-46c6-9c65-725f73686965,rev?*%
 %TF.SameCoordinates,Original*%
 %TF.FileFunction,Soldermask,Top*%
 %TF.FilePolarity,Negative*%
 %FSLAX46Y46*%
 G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
-G04 Created by KiCad (PCBNEW 6.0.11+dfsg-1) date 2025-02-11 21:53:13*
+G04 Created by KiCad (PCBNEW 6.0.11+dfsg-1) date 2025-02-12 16:55:50*
 %MOMM*%
 %LPD*%
 G01*
@@ -176,9 +176,9 @@ X136995000Y-91440000D03*
 %TD*%
 D10*
 %TO.C,C1*%
-X140280698Y-104394000D03*
+X140378047Y-104394000D03*
 D27*
-X144080698Y-104394000D03*
+X144178047Y-104394000D03*
 %TD*%
 D28*
 %TO.C,J1*%

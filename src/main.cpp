@@ -23,10 +23,12 @@
 #define CFG_PID_KP              23.0
 #define CFG_PID_KI              0.043
 #define CFG_PID_KD              160.0
-#define CFG_PID_MAX_TEMP        200
+#define CFG_PID_TEMP            230.0
+#define CFG_PID_MAX_TEMP        240.0
+#define CFG_PID_MAX_OUTPUT      200.0
 
 volatile bool hasFilament_ = false;
-double pidInput_, pidOutput_, pidSetpoint_;
+double pidInput_, pidOutput_, pidSetpoint_=CFG_PID_TEMP;
 
 Timer<3, millis> timer_;
 
@@ -73,8 +75,13 @@ double thermistorRead() {
 
 bool thermistorProcess(void *arg) {
     pidInput_ = thermistorRead();
-    pid_.Compute();
+    if (pidInput_ > CFG_PID_MAX_TEMP || isnan(pidInput_)) {
+        pidOutput_ = 0;
+    } else {
+        pid_.Compute();
+    }
     Serial.print(pidInput_); Serial.print(' '); Serial.println(pidOutput_);
+    analogWrite(CFG_HOTEND_PIN, pidOutput_);
     return true;
 }
 
@@ -93,7 +100,7 @@ void setup() {
     analogWrite(CFG_HOTEND_PIN, 0);
 
     pid_.SetTunings(CFG_PID_KP, CFG_PID_KI, CFG_PID_KD);
-    pid_.SetOutputLimits(0, CFG_PID_MAX_TEMP);
+    pid_.SetOutputLimits(0, CFG_PID_MAX_OUTPUT);
     pid_.SetMode(AUTOMATIC);
 
     timer_.every(1000, debugPrint);

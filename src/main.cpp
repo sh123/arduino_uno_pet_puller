@@ -28,10 +28,14 @@
 #define CFG_PID_MAX_OUTPUT      200.0
 #define CFG_PID_READY_TEMP      150.0
 
-volatile bool hasFilament_ = false;
+#define CFG_HOTEND_TIMEOUT_MS   5L*60L*1000L
+
+volatile bool runoutHasFilament_ = false;
 double pidInput_, pidOutput_, pidSetpoint_=CFG_PID_TEMP;
+bool hotendIsPaused_ = true;
 
 Timer<3, millis> timer_;
+Timer<>::Task hotendPauseTask_;
 
 Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0, 
     CFG_STEPPER_PIN_M1, CFG_STEPPER_PIN_M2, CFG_STEPPER_PIN_M3);
@@ -40,7 +44,7 @@ PID pid_(&pidInput_, &pidOutput_, &pidSetpoint_, CFG_PID_KP,
     CFG_PID_KI, CFG_PID_KD, DIRECT);
 
 bool stepperStepTask(void *arg) {
-    if (hasFilament_) {
+    if (runoutHasFilament_) {
         stepper_.step(CFG_STEPPER_STEP);
     }
     return true;
@@ -58,14 +62,37 @@ void stepperRelease() {
     digitalWrite(CFG_STEPPER_PIN_M3, LOW); 
 }
 
+bool hotendPauseTask(void *arg) {
+    hotendIsPaused_ = true;
+    digitalWrite(CFG_LED_PIN, LOW);
+    analogWrite(CFG_HOTEND_PIN, 0);
+    return true;
+}
+
+void hotendCancelPauseTimer() {
+    if (hotendPauseTask_ != nullptr) {
+        timer_.cancel(hotendPauseTask_);
+        hotendPauseTask_ = nullptr;
+    }
+    hotendIsPaused_ = false;
+}
+
+void hotendStartPauseTimer() {
+    hotendCancelPauseTimer();
+    hotendPauseTask_ = timer_.in(CFG_HOTEND_TIMEOUT_MS, hotendPauseTask);
+}
+
 void runoutTriggeredInterrupt() {
     bool hasFilament = digitalRead(CFG_RUNOUT_PIN);
-    if (hasFilament_ != hasFilament) {
+    if (runoutHasFilament_ != hasFilament) {
         Serial.println(hasFilament ? F("ON") : F("OFF"));
-        if (!hasFilament) {
+        if (hasFilament) {
+            hotendCancelPauseTimer();
+        } else {
             stepperRelease();
+            hotendStartPauseTimer();
         }
-        hasFilament_ = hasFilament;
+        runoutHasFilament_ = hasFilament;
     }
 }
 
@@ -84,6 +111,7 @@ double thermistorRead() {
 }
 
 bool hotendTask(void *arg) {
+    if (hotendIsPaused_) return true;
     pidInput_ = thermistorRead();
     if (pidInput_ > CFG_PID_MAX_TEMP || isnan(pidInput_)) {
         pidOutput_ = 0;
@@ -101,6 +129,9 @@ bool hotendTask(void *arg) {
 }
 
 void hotendInitialize() {
+    hotendIsPaused_ = true;
+    hotendPauseTask_ = nullptr;
+
     pinMode(CFG_LED_PIN, OUTPUT);
     digitalWrite(CFG_LED_PIN, LOW);
 

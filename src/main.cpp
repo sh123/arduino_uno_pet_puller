@@ -57,7 +57,6 @@ void runoutTriggered() {
     bool hasFilament = digitalRead(CFG_RUNOUT_PIN);
     if (hasFilament_ != hasFilament) {
         Serial.println(hasFilament ? F("ON") : F("OFF"));
-        digitalWrite(CFG_HOTEND_PIN, hasFilament ? HIGH : LOW);
         if (!hasFilament) {
             stepperRelease();
         }

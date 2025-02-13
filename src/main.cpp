@@ -39,7 +39,7 @@ Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0,
 PID pid_(&pidInput_, &pidOutput_, &pidSetpoint_, CFG_PID_KP, 
     CFG_PID_KI, CFG_PID_KD, DIRECT);
 
-bool stepperStepTimer(void *arg) {
+bool stepperStepTask(void *arg) {
     if (hasFilament_) {
         stepper_.step(CFG_STEPPER_STEP);
     }
@@ -48,7 +48,7 @@ bool stepperStepTimer(void *arg) {
 
 void stepperInitialize() {
     stepper_.setSpeed(CFG_STEPPER_RPM);
-    timer_.every(CFG_STEPPER_RUN_MS, stepperStepTimer);
+    timer_.every(CFG_STEPPER_RUN_MS, stepperStepTask);
 }
 
 void stepperRelease() {
@@ -83,7 +83,7 @@ double thermistorRead() {
     return tempKelvin - 273.15;
 }
 
-bool hotendProcessTimer(void *arg) {
+bool hotendTask(void *arg) {
     pidInput_ = thermistorRead();
     if (pidInput_ > CFG_PID_MAX_TEMP || isnan(pidInput_)) {
         pidOutput_ = 0;
@@ -107,7 +107,7 @@ void hotendInitialize() {
     pid_.SetTunings(CFG_PID_KP, CFG_PID_KI, CFG_PID_KD);
     pid_.SetOutputLimits(0, CFG_PID_MAX_OUTPUT);
     pid_.SetMode(AUTOMATIC);
-    timer_.every(CFG_THERMISTOR_RUN_MS, hotendProcessTimer);
+    timer_.every(CFG_THERMISTOR_RUN_MS, hotendTask);
 }
 
 void setup() {

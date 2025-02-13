@@ -44,9 +44,8 @@ PID pid_(&pidInput_, &pidOutput_, &pidSetpoint_, CFG_PID_KP,
     CFG_PID_KI, CFG_PID_KD, DIRECT);
 
 bool stepperStepTask(void *arg) {
-    if (runoutHasFilament_) {
-        stepper_.step(CFG_STEPPER_STEP);
-    }
+    if (!runoutHasFilament_) return true;
+    stepper_.step(CFG_STEPPER_STEP);
     return true;
 }
 
@@ -84,16 +83,15 @@ void hotendStartPauseTimer() {
 
 void runoutTriggeredInterrupt() {
     bool hasFilament = digitalRead(CFG_RUNOUT_PIN);
-    if (runoutHasFilament_ != hasFilament) {
-        Serial.println(hasFilament ? F("ON") : F("OFF"));
-        if (hasFilament) {
-            hotendCancelPauseTimer();
-        } else {
-            stepperRelease();
-            hotendStartPauseTimer();
-        }
-        runoutHasFilament_ = hasFilament;
+    if (runoutHasFilament_ == hasFilament) return;
+    Serial.println(hasFilament ? F("ON") : F("OFF"));
+    if (hasFilament) {
+        hotendCancelPauseTimer();
+    } else {
+        stepperRelease();
+        hotendStartPauseTimer();
     }
+    runoutHasFilament_ = hasFilament;
 }
 
 void runoutInitialize() {

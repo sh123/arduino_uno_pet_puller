@@ -32,7 +32,7 @@
 
 #define CFG_HOTEND_TIMEOUT_MS   5L*60L*1000L
 
-volatile bool runoutHasFilament_ = false;
+volatile bool runoutHasFilament_=false, runoutTriggered_=false;
 double pidInput_, pidOutput_, pidSetpoint_=CFG_PID_TEMP;
 bool hotendIsPaused_ = true;
 
@@ -92,17 +92,22 @@ void hotendStartPauseTimer() {
     hotendPauseTask_ = timer_.in(CFG_HOTEND_TIMEOUT_MS, hotendPauseTask);
 }
 
-void runoutTriggeredInterrupt() {
-    bool hasFilament = digitalRead(CFG_RUNOUT_PIN);
-    if (runoutHasFilament_ == hasFilament) return;
-    Serial.println(hasFilament ? F("ON") : F("OFF"));
-    if (hasFilament) {
+void runoutTriggered() {
+    Serial.println(runoutHasFilament_ ? F("ON") : F("OFF"));
+    if (runoutHasFilament_) {
         hotendCancelPauseTimer();
     } else {
         stepperRelease();
         hotendStartPauseTimer();
     }
+    runoutTriggered_ = false;
+}
+
+void runoutTriggeredInterrupt() {
+    bool hasFilament = digitalRead(CFG_RUNOUT_PIN);
+    if (runoutHasFilament_ == hasFilament) return;
     runoutHasFilament_ = hasFilament;
+    runoutTriggered_ = true;
 }
 
 void runoutInitialize() {
@@ -157,5 +162,8 @@ void setup() {
 }
 
 void loop() {
+    if (runoutTriggered_) {
+        runoutTriggered();
+    }
     timer_.tick();
 }

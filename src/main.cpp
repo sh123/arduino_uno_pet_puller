@@ -31,7 +31,7 @@
 volatile bool hasFilament_ = false;
 double pidInput_, pidOutput_, pidSetpoint_=CFG_PID_TEMP;
 
-Timer<2, millis> timer_;
+Timer<3, millis> timer_;
 
 Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0, 
     CFG_STEPPER_PIN_M1, CFG_STEPPER_PIN_M2, CFG_STEPPER_PIN_M3);
@@ -73,7 +73,7 @@ double thermistorRead() {
     return tempKelvin - 273.15;
 }
 
-bool thermistorProcess(void *arg) {
+bool hotendProcess(void *arg) {
     pidInput_ = thermistorRead();
     if (pidInput_ > CFG_PID_MAX_TEMP || isnan(pidInput_)) {
         pidOutput_ = 0;
@@ -104,7 +104,7 @@ void setup() {
     pid_.SetMode(AUTOMATIC);
 
     timer_.every(CFG_STEPPER_RUN_MS, stepperStep);
-    timer_.every(CFG_THERMISTOR_RUN_MS, thermistorProcess);
+    timer_.every(CFG_THERMISTOR_RUN_MS, hotendProcess);
 
     attachInterrupt(digitalPinToInterrupt(CFG_RUNOUT_PIN), runoutTriggered, CHANGE);
 

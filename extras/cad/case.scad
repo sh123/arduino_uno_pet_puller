@@ -44,6 +44,23 @@ module box_generate(board_type, include_board, wall_width, wall_board_space, add
     vent_hole_height = 12;
     vent_hole_width = 2;
     vent_hole_span = 75;
+    vent_hole_x = -10;
+    vent_hole_y = 5;
+    vent_hole_z = 17;
+    
+    // cable hole
+    cable_hole_width = 50;
+    cable_hole_height = 10;
+    cable_hole_x = 1;
+    cable_hole_y = 70;
+    cable_hole_z = 22;
+    
+    // power cable hole
+    power_hole_width = 12;
+    power_hole_height = 14;
+    power_hole_x = 27.5;
+    power_hole_y = -6;
+    power_hole_z = 22;
     
     // common
     extrude_width = 14;
@@ -63,20 +80,20 @@ module box_generate(board_type, include_board, wall_width, wall_board_space, add
             }
             // close old power socket
             translate([old_socket_x, old_socket_y, old_socket_z])
-                cube([12, wall_width, extrude_width]);
+                cube([power_hole_width, wall_width, power_hole_height]);
         } 
         // add vent holes
         for (vent_hole_num = [0:vent_hole_count])
         {
-            translate([-10, 5 + vent_hole_num * 4, 17])
+            translate([vent_hole_x, vent_hole_y + vent_hole_num * 4, vent_hole_z])
                 cube([vent_hole_span, vent_hole_width, vent_hole_height]);
         }
         // cable hole
-        translate([1, 70, 22])
-            cube([50, extrude_width, 10]);
+        translate([cable_hole_x, cable_hole_y, cable_hole_z])
+            cube([cable_hole_width, extrude_width, cable_hole_height]);
         // connector hole
-        translate([27.5, -6, 22])
-            cube([12, wall_width+2, extrude_width]);
+        translate([power_hole_x, power_hole_y, power_hole_z])
+            cube([power_hole_width, extrude_width, power_hole_height]);
     }
 }
 

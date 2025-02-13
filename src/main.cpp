@@ -3,6 +3,8 @@
 #include <Stepper.h>
 #include <PID_v1.h>
 
+#define CFG_TIMER_COUNT         3
+
 #define CFG_STEPPER_RPM         40
 #define CFG_STEPPER_STEPS       200
 #define CFG_STEPPER_STEP        1
@@ -34,7 +36,7 @@ volatile bool runoutHasFilament_ = false;
 double pidInput_, pidOutput_, pidSetpoint_=CFG_PID_TEMP;
 bool hotendIsPaused_ = true;
 
-Timer<3, millis> timer_;
+Timer<CFG_TIMER_COUNT, millis> timer_;
 Timer<>::Task hotendPauseTask_;
 
 Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0, 
@@ -42,6 +44,15 @@ Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0,
 
 PID pid_(&pidInput_, &pidOutput_, &pidSetpoint_, CFG_PID_KP, 
     CFG_PID_KI, CFG_PID_KD, DIRECT);
+
+double thermistorRead() {
+    double c1 = 0.8438162826e-03, c2 = 2.059601750e-04, c3 = 0.8615484887e-07;
+    double level = (double)analogRead(CFG_THERMISTOR_PIN);
+    double levelR = CFG_THERMISTOR_R * (1023.0 / level - 1.0);
+    double levelLogR = log(levelR);
+    double tempKelvin = (1.0 / (c1 + c2 * levelLogR + c3 * levelLogR * levelLogR * levelLogR)); 
+    return tempKelvin - 273.15;
+}
 
 bool stepperStepTask(void *arg) {
     if (!runoutHasFilament_) return true;
@@ -97,15 +108,6 @@ void runoutTriggeredInterrupt() {
 void runoutInitialize() {
     pinMode(CFG_RUNOUT_PIN, INPUT);
     attachInterrupt(digitalPinToInterrupt(CFG_RUNOUT_PIN), runoutTriggeredInterrupt, CHANGE);
-}
-
-double thermistorRead() {
-    double c1 = 0.8438162826e-03, c2 = 2.059601750e-04, c3 = 0.8615484887e-07;
-    double level = (double)analogRead(CFG_THERMISTOR_PIN);
-    double levelR = CFG_THERMISTOR_R * (1023.0 / level - 1.0);
-    double levelLogR = log(levelR);
-    double tempKelvin = (1.0 / (c1 + c2 * levelLogR + c3 * levelLogR * levelLogR * levelLogR)); 
-    return tempKelvin - 273.15;
 }
 
 bool hotendTask(void *arg) {

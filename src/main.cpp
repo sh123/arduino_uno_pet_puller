@@ -46,7 +46,7 @@ PID pid_(&pidInput_, &pidOutput_, &pidSetpoint_, CFG_PID_KP,
     CFG_PID_KI, CFG_PID_KD, DIRECT);
 
 double thermistorRead() {
-    double c1 = 0.8438162826e-03, c2 = 2.059601750e-04, c3 = 0.8615484887e-07;
+    static const double c1 = 0.8438162826e-03, c2 = 2.059601750e-04, c3 = 0.8615484887e-07;
     double level = (double)analogRead(CFG_THERMISTOR_PIN);
     double levelR = CFG_THERMISTOR_R * (1023.0 / level - 1.0);
     double levelLogR = log(levelR);
@@ -112,6 +112,8 @@ void runoutTriggeredInterrupt() {
 }
 
 void runoutInitialize() {
+    runoutHasFilament_ = false;
+    runoutTriggered_ = false;
     pinMode(CFG_RUNOUT_PIN, INPUT);
     attachInterrupt(digitalPinToInterrupt(CFG_RUNOUT_PIN), runoutTriggeredInterrupt, CHANGE);
 }

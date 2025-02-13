@@ -111,7 +111,6 @@ void hotendInitialize() {
 }
 
 void setup() {
-
     hotendInitialize();
     stepperInitialize();
     runoutInitialize();

@@ -93,7 +93,7 @@ bool hotendTask(void *arg) {
     Serial.print(pidInput_); Serial.print(' '); Serial.println(pidOutput_);
     analogWrite(CFG_HOTEND_PIN, pidOutput_);
     if (pidInput_ > CFG_PID_READY_TEMP) {
-        digitalWrite(CFG_LED_PIN, LOW);
+        digitalWrite(CFG_LED_PIN, HIGH);
     } else {
         digitalWrite(CFG_LED_PIN, !digitalRead(CFG_LED_PIN));
     }
@@ -102,11 +102,15 @@ bool hotendTask(void *arg) {
 
 void hotendInitialize() {
     pinMode(CFG_LED_PIN, OUTPUT);
+    digitalWrite(CFG_LED_PIN, LOW);
+
     pinMode(CFG_HOTEND_PIN, OUTPUT);
     analogWrite(CFG_HOTEND_PIN, 0);
+
     pid_.SetTunings(CFG_PID_KP, CFG_PID_KI, CFG_PID_KD);
     pid_.SetOutputLimits(0, CFG_PID_MAX_OUTPUT);
     pid_.SetMode(AUTOMATIC);
+
     timer_.every(CFG_THERMISTOR_RUN_MS, hotendTask);
 }
 

@@ -39,7 +39,7 @@ Stepper stepper_(CFG_STEPPER_STEPS, CFG_STEPPER_PIN_M0,
 PID pid_(&pidInput_, &pidOutput_, &pidSetpoint_, CFG_PID_KP, 
     CFG_PID_KI, CFG_PID_KD, DIRECT);
 
-bool stepperStep(void *arg) {
+bool stepperStepTimer(void *arg) {
     if (hasFilament_) {
         stepper_.step(CFG_STEPPER_STEP);
     }
@@ -48,7 +48,7 @@ bool stepperStep(void *arg) {
 
 void stepperInitialize() {
     stepper_.setSpeed(CFG_STEPPER_RPM);
-    timer_.every(CFG_STEPPER_RUN_MS, stepperStep);
+    timer_.every(CFG_STEPPER_RUN_MS, stepperStepTimer);
 }
 
 void stepperRelease() {
@@ -58,7 +58,7 @@ void stepperRelease() {
     digitalWrite(CFG_STEPPER_PIN_M3, LOW); 
 }
 
-void runoutTriggered() {
+void runoutTriggeredInterrupt() {
     bool hasFilament = digitalRead(CFG_RUNOUT_PIN);
     if (hasFilament_ != hasFilament) {
         Serial.println(hasFilament ? F("ON") : F("OFF"));
@@ -71,7 +71,7 @@ void runoutTriggered() {
 
 void runoutInitialize() {
     pinMode(CFG_RUNOUT_PIN, INPUT);
-    attachInterrupt(digitalPinToInterrupt(CFG_RUNOUT_PIN), runoutTriggered, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(CFG_RUNOUT_PIN), runoutTriggeredInterrupt, CHANGE);
 }
 
 double thermistorRead() {
@@ -83,8 +83,7 @@ double thermistorRead() {
     return tempKelvin - 273.15;
 }
 
-
-bool hotendProcess(void *arg) {
+bool hotendProcessTimer(void *arg) {
     pidInput_ = thermistorRead();
     if (pidInput_ > CFG_PID_MAX_TEMP || isnan(pidInput_)) {
         pidOutput_ = 0;
@@ -108,7 +107,7 @@ void hotendInitialize() {
     pid_.SetTunings(CFG_PID_KP, CFG_PID_KI, CFG_PID_KD);
     pid_.SetOutputLimits(0, CFG_PID_MAX_OUTPUT);
     pid_.SetMode(AUTOMATIC);
-    timer_.every(CFG_THERMISTOR_RUN_MS, hotendProcess);
+    timer_.every(CFG_THERMISTOR_RUN_MS, hotendProcessTimer);
 }
 
 void setup() {

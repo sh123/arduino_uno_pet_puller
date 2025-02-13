@@ -92,7 +92,9 @@ void hotendStartPauseTimer() {
     hotendPauseTask_ = timer_.in(CFG_HOTEND_TIMEOUT_MS, hotendPauseTask);
 }
 
-void runoutTriggered() {
+void runoutProcess() {
+    if (!runoutTriggered_) return;
+    runoutTriggered_ = false;
     Serial.println(runoutHasFilament_ ? F("ON") : F("OFF"));
     if (runoutHasFilament_) {
         hotendCancelPauseTimer();
@@ -100,7 +102,6 @@ void runoutTriggered() {
         stepperRelease();
         hotendStartPauseTimer();
     }
-    runoutTriggered_ = false;
 }
 
 void runoutTriggeredInterrupt() {
@@ -162,8 +163,6 @@ void setup() {
 }
 
 void loop() {
-    if (runoutTriggered_) {
-        runoutTriggered();
-    }
+    runoutProcess();
     timer_.tick();
 }

@@ -58,9 +58,9 @@ module box_generate(board_type, include_board, wall_width, wall_board_space, add
     // power cable hole
     power_hole_width = 12;
     power_hole_height = 14;
-    power_hole_x = 27.5;
+    power_hole_x = 26.5;
     power_hole_y = -6;
-    power_hole_z = 22;
+    power_hole_z = 20;
     
     // common
     extrude_width = 14;

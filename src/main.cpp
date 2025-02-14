@@ -25,7 +25,7 @@
 #define CFG_PID_KP              23.0
 #define CFG_PID_KI              0.043
 #define CFG_PID_KD              160.0
-#define CFG_PID_TEMP            225.0   // tune for desired temperature
+#define CFG_PID_TEMP            200.0   // tune for desired temperature
 #define CFG_PID_MAX_TEMP        240.0
 #define CFG_PID_MAX_OUTPUT      200.0
 #define CFG_PID_READY_TEMP      150.0

@@ -3,6 +3,6 @@ This project is Arduino UNO shield and minimalistic firmware for Petalot PET Bot
 
 For more infromation about Petalot and its construction read at https://github.com/function3d/petalot.
 
-This alternative firmware version based on Arduino UNO shield and MX1508 stepper controller, unlike origintal version it does not use WiFi remote control, also, it uses external 12-13V power supply and different stepper motor from old printer.
+This alternative firmware version based on Arduino UNO shield and MX1508 stepper controller, unlike origintal version it does not use WiFi remote control, also, it uses external 12-13V power supply and different stepper motor from old printer found in junk box.
 
 NB! The PCB board is designed for CNC milling, so some layout design decisions might look somewhat illogical.

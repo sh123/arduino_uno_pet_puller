@@ -1,5 +1,5 @@
 # Arduino PET filament puller
-This project is Arduino UNO shiled and minimalistic firmware for Petalot PET Bottle to 3D filament.
+This project is Arduino UNO shield and minimalistic firmware for Petalot PET Bottle to 3D filament.
 
 For more infromation about Petalot and its construction read at https://github.com/function3d/petalot.
 
